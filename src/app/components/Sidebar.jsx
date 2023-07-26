@@ -20,16 +20,16 @@ const Sidebar = () => {
   return (
     <aside className="basis-[20%] py-[12px] shadow-3xl sticky">
       <ul className='group'>
-        {sideBarUrls.map(sidebar => {
+        {sideBarUrls.map((sidebar, i) => {
           let { url, text } = sidebar
           return (
-            <>
-              <li className='relative'>
-                <Link href={url} className={`flex py-[12px] px-[24px] items-center text-zink-400 before:content-[""] before:absolute before:border-l-[5px] ${pathname === url ? 'before:border-black' : 'before:border-[transparent]'} before:left-0 before:h-[80%] before:rounded-tr-[8px] before:rounded-br-[8px]' id={isActive ? "active" : ""}><span className='mr-[10px]`}>
-                  <img src={sidebarIcon.src} alt="sidebar-icon" />
-                  <span className="ml-2"> {text}</span></Link>
-              </li >
-            </>
+
+            <li className='relative' key={i}>
+              <Link href={url} className={`flex py-[12px] px-[24px] items-center text-zink-400 before:content-[""] before:absolute before:border-l-[5px] ${pathname === url ? 'before:border-black' : 'before:border-[transparent]'} before:left-0 before:h-[80%] before:rounded-tr-[8px] before:rounded-br-[8px]' id={isActive ? "active" : ""}><span className='mr-[10px]`}>
+                <img src={sidebarIcon.src} alt="sidebar-icon" />
+                <span className="ml-2"> {text}</span></Link>
+            </li >
+
           )
         })}
 

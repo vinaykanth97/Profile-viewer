@@ -2,22 +2,26 @@
 import InnerContent from '../components/InnerContent'
 import { InputField, PrimaryBtn, SecondaryBtn, ToggleSwitch } from '../components/ElementUtils'
 import avatarProfile from '../images/codedamn-avatar.png'
-import { useForm, Controller } from "react-hook-form"
-import { useEffect, useState } from 'react'
+import { Controller, useForm } from "react-hook-form"
+import { useCallback, useContext, useEffect } from 'react'
+import { formContext } from '../components/formContext'
 
 
 
 export default function Profile() {
-  let getDataFromLocal = localStorage?.getItem('profileDatas')
-  const [profileData, setprofileData] = useState(JSON.parse(getDataFromLocal))
+  let useFormContext = useContext(formContext)
+  let { formData, setFormData } = useFormContext
   const { register, handleSubmit, formState: { errors }, control } = useForm({
     mode: 'all',
-    defaultValues: profileData
+    defaultValues: formData?.profileData
   });
   const onSubmit = (data) => {
-    setprofileData(data)
-    localStorage.setItem('profileDatas', JSON.stringify(data))
+    localStorage.setItem('localFormDatas', JSON?.stringify({ ...formData, profileData: data }))
+    setFormData({
+      profileData: data,
+    })
   };
+
   return (
     <>
       <InnerContent>
@@ -38,23 +42,23 @@ export default function Profile() {
           <Controller
             control={control}
             name="displayName"
-            render={({ field: { onChange, onBlur, value, ref } }) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <InputField labelName="Display name" fieldName="displayName" type="text" {...register("displayName", { required: true })} error={errors.displayName} onChange={onChange}
-                onBlur={onBlur} value={value} ref={ref} />
+                onBlur={onBlur} value={value} />
             )}
           />
 
           <div className="mb-7" >
             <label className="block text-black font-semibold mb-1">About</label>
-            <textarea rows="3" className={`border-solid border-zink-200 border-2 w-[100%]  p-2 text-black resize-none ${errors.about ? 'border-[#d84848]' : ''}`} name='about' {...register("about", { required: true })}></textarea>
+            <textarea rows="3" className={`border-solid  border-2 w-[100%]  p-2 text-black resize-none ${errors.about ? 'border-[#d84848]' : 'border-zink-200'}`} name='about' {...register("about", { required: true })}></textarea>
             {errors.about && <p className='mt-2 text-[#d84848]'>This field is required</p>}
           </div >
           <Controller
             control={control}
             name="profession"
-            render={({ field: { onChange, onBlur, value, ref } }) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <InputField labelName="Profession" fieldName="profession" type="text" {...register("profession", { required: true })} error={errors.profession} onChange={onChange}
-                onBlur={onBlur} value={value} ref={ref} />
+                onBlur={onBlur} value={value} />
             )}
           />
 
@@ -62,14 +66,14 @@ export default function Profile() {
           <Controller
             control={control}
             name="dateofbirth"
-            render={({ field: { onChange, onBlur, value, ref } }) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <InputField labelName="dateofbirth" fieldName="dateofbirth" type="date" {...register("dateofbirth", { required: true })} error={errors.dateofbirth} onChange={onChange}
-                onBlur={onBlur} value={value} ref={ref} />
+                onBlur={onBlur} value={value} />
             )}
           />
           <div className="mb-7" >
             <label className="block text-black font-semibold mb-1">Gender</label>
-            <select name="gender" className={`${errors.gender ? 'border-[#d84848]' : ''} border-solid border-zink-200 border-2 w-[100%]  p-2 text-black `}  {...register("gender", { required: true })}>
+            <select name="gender" className={`${errors.gender ? 'border-[#d84848]' : 'border-zink-200'} border-solid border-zink-200 border-2 w-[100%]  p-2 text-black `}  {...register("gender", { required: true })}>
               <option value="">Select your Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -84,16 +88,16 @@ export default function Profile() {
               control={control}
               name="followers"
               defaultValue={false}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <ToggleSwitch title="Followers and following" subtitle="Shows your followers and the users you follow on codedamn" fieldName="followers" {...register("followers")} value={value} ref={ref} onBlur={onBlur} onChange={onChange} />
+              render={({ field: { onChange, onBlur, value } }) => (
+                <ToggleSwitch title="Followers and following" subtitle="Shows your followers and the users you follow on codedamn" fieldName="followers" {...register("followers")} value={value} onBlur={onBlur} onChange={onChange} />
               )}
             />
             <Controller
               control={control}
               name="xpEarned"
               defaultValue={false}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <ToggleSwitch title="XP" subtitle="Shows the XP you have earned" fieldName="xpEarned"   {...register("xpEarned")} value={value} ref={ref} onBlur={onBlur} onChange={onChange} />
+              render={({ field: { onChange, onBlur, value } }) => (
+                <ToggleSwitch title="XP" subtitle="Shows the XP you have earned" fieldName="xpEarned"   {...register("xpEarned")} value={value} onBlur={onBlur} onChange={onChange} />
               )}
             />
 
@@ -101,8 +105,8 @@ export default function Profile() {
               control={control}
               name="achievementBadges"
               defaultValue={false}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <ToggleSwitch title="Achievement badges" subtitle="Shows your relative percentile and proficiency" fieldName="achievementBadges"  {...register("achievementBadges")} value={value} ref={ref} onChange={onChange} onBlur={onBlur} />
+              render={({ field: { onChange, onBlur, value } }) => (
+                <ToggleSwitch title="Achievement badges" subtitle="Shows your relative percentile and proficiency" fieldName="achievementBadges"  {...register("achievementBadges")} value={value} onChange={onChange} onBlur={onBlur} />
               )}
             />
 
