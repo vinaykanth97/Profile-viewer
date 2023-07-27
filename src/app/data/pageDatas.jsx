@@ -5,7 +5,7 @@ import project2 from "../images/project-2.jpg"
 import project3 from "../images/project-3.jpg"
 import project4 from "../images/project-4.jpg"
 import { v4 as uuid_v4 } from "uuid";
-export const playGroundItems =
+export const playground =
     [{
         title: 'Codesandbox',
         techName: 'HTML/CSS',
@@ -14,6 +14,7 @@ export const playGroundItems =
         techImg: html5Icon,
         projectImg: project1,
         selected: false
+
     }, {
         title: 'Codepen',
         techName: 'HTML/CSS/JavaScript',
@@ -22,6 +23,7 @@ export const playGroundItems =
         techImg: jsIcon,
         projectImg: project2,
         selected: false
+
     }, {
         title: 'Submenu Navigator',
         techName: 'React',
@@ -30,6 +32,7 @@ export const playGroundItems =
         techImg: jsIcon,
         projectImg: project3,
         selected: false
+
     }, {
         title: 'Panel Adjustor',
         techName: 'HTML/CSS/JavaScript',
@@ -37,30 +40,35 @@ export const playGroundItems =
         cardId: "play4",
         techImg: html5Icon,
         selected: false
+
     }]
 
-export const projectItems = [{
+export const projects = [{
     title: 'Voice Dental',
     projectImg: project1,
     techName: ['HTML/CSS', 'Javascript'],
     time: '1 min ago',
     cardId: uuid_v4(),
+    selected: false
 }, {
     title: 'Don Bosco church',
     projectImg: project4,
     techName: ['HTML/CSS', 'Javascript'],
     time: '1 min ago',
     cardId: uuid_v4(),
+    selected: false
 }, {
     title: 'INTRC',
     projectImg: project3,
     techName: ['HTML/CSS', 'Javascript'],
     time: '1 min ago',
     cardId: uuid_v4(),
+    selected: false
 }, {
     title: 'Thinkstudy',
     projectImg: project2,
     techName: ['HTML/CSS', 'Javascript'],
     time: '1 min ago',
     cardId: uuid_v4(),
+    selected: false
 }]

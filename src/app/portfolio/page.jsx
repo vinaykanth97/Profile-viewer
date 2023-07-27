@@ -1,10 +1,10 @@
 "use client";
 import { PlaygroundCards, PrimaryBtn, ProjectCards, SecondaryBtn } from '../components/ElementUtils'
 import InnerContent from '../components/InnerContent'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { formContext } from '../components/formContext'
 import { useForm, Controller } from 'react-hook-form';
-import { playGroundItems, projectItems } from '../data/pageDatas';
+import { playground, projects } from '../data/pageDatas';
 
 export default function Portfolio() {
 
@@ -12,54 +12,88 @@ export default function Portfolio() {
     let { formData, setFormData } = useFormContext
     const { register, handleSubmit, formState: { errors }, control, setValue, getValues, reset } = useForm({
         mode: 'all',
-        defaultValues: formData?.portfolioData
+        // defaultValues: formData?.portfolioData
     });
     let [portfolio, setPortfolio] = useState({
-        playground: playGroundItems,
-        projects: projectItems
+        playground,
+        projects
     })
-    let playgroundArr = []
-    let projectArr = []
 
-    const HandleChange = (e, checkBoxName, id) => {
-        let { playground, projects } = portfolio
-        function CheckArray(whichArray, whichEmpArray, setValueIn) {
+    const HandleChange = (e, checkBoxName, selectedItem) => {
 
-            if (e.target.checked) {
-                console.log('checked')
-                whichArray?.filter((p) => {
-                    if (p.cardId === id) {
-                        whichEmpArray.push(p)
-
-                        setValue(setValueIn, whichEmpArray)
-                    }
-                })
-            } else {
-                console.log('unchecked')
-                let tes = playgroundArr?.findIndex((p) => {
-                    if (p.cardId === id) {
-                        return p
-                    }
-                })
-                playgroundArr?.splice(tes, 1)
-                setValue(setValueIn, whichEmpArray)
-            }
-        }
-        if (checkBoxName === "playGroundItems") {
-            CheckArray(playground, playgroundArr, 'playGroundItems')
+        if (e.target.checked) {
+            let selectedPortfolio = portfolio?.playground?.map(t => {
+                if (t.cardId === selectedItem.cardId) {
+                    t.selected = true
+                }
+                return t
+            })
+            let selectProject = portfolio?.projects?.map(t => {
+                if (t.cardId === selectedItem.cardId) {
+                    t.selected = true
+                }
+                return t
+            })
+            setPortfolio({
+                playground: selectedPortfolio,
+                projects: selectProject
+            })
+            // selectedItem.selected = true
+            // setPortfolio(portfolio)
+            // if (checkBoxName === "playGroundItems") {
+            //     // console.log(portfolio)
+            //     setPortfolio({
+            //         playground: [...portfolio?.playground, selectedItem],
+            //         projects: [...portfolio?.projects]
+            //     })
+            // } else {
+            //     setPortfolio({
+            //         playground: [...portfolio?.playground],
+            //         projects: [...portfolio?.projects, selectedItem]
+            //     })
+            // }
         } else {
-            CheckArray(projects, projectArr, 'projectItems')
-        }
+            let selectedPortfolio = portfolio?.playground?.map(t => {
+                if (t.cardId === selectedItem.cardId) {
+                    t.selected = false
+                }
+                return t
+            })
+            let selectProject = portfolio?.projects?.map(t => {
+                if (t.cardId === selectedItem.cardId) {
+                    t.selected = false
+                }
+                return t
+            })
+            setPortfolio({
+                playground: selectedPortfolio,
+                projects: selectProject
+            })
 
+        }
 
     }
+    useEffect(() => {
+        if (JSON.parse(localStorage.getItem('localFormDatas'))?.portfolioData) {
+            setFormData(formData)
+        } else {
+            setFormData({
+                portfolioData: {
+                    playground,
+                    projects
+                }
+            })
+        }
+        setValue('playground', portfolio?.playground)
+        setValue('projects', portfolio?.projects)
+    }, [portfolio])
+
     const onSubmit = (data) => {
         console.log(data)
-
-        // localStorage.setItem('localFormDatas', JSON?.stringify({ ...formData, portfolioData: data }))
-        // setFormData({
-        //     portfolioData: data,
-        // })
+        localStorage.setItem('localFormDatas', JSON?.stringify({ ...formData, portfolioData: data }))
+        setFormData({
+            portfolioData: data,
+        })
     };
     return (
 
@@ -70,22 +104,23 @@ export default function Portfolio() {
                     <p className='cursor-pointer'>See all</p>
                 </div>
                 <div className='flex flex-wrap gap-[20px] justify-between'>
-                    {playGroundItems.map((items, i) => {
+                    {formData?.portfolioData?.playground?.map((items, i) => {
+                        console.log(items)
                         return (
                             <Controller
                                 defaultValue={false}
                                 control={control}
-                                name="playGroundItems"
-                                render={({ field: { onChange, onBlur, value } }) => (
+                                name="playground"
+                                render={({ field: { onBlur, value } }) => (
                                     <PlaygroundCards
                                         techIcon={items.techImg.src}
                                         title={items.title}
                                         techName={items.techName}
                                         time={items.time}
                                         cardId={items.cardId}
-
-                                        {...register("playGroundItems")}
-                                        onChange={(e) => HandleChange(e, "playGroundItems", items.cardId)}
+                                        selectedItem={items.selected}
+                                        {...register("playground")}
+                                        onChange={(e) => HandleChange(e, "playground", items)}
                                         onBlur={onBlur}
                                         value={value}
                                     />
@@ -100,20 +135,22 @@ export default function Portfolio() {
                     <p className='cursor-pointer'>See all</p>
                 </div>
                 <div className='flex flex-wrap gap-[20px] justify-between'>
-                    {projectItems.map((items, i) => {
+                    {formData?.portfolioData?.projects?.map((items) => {
                         return (
                             <Controller
                                 control={control}
-                                name="projectItems"
+                                name="projects"
                                 defaultValue={false}
-                                render={({ field: { onChange, onBlur, value } }) => (
+                                render={({ field: { onBlur, value } }) => (
                                     <ProjectCards
                                         projectImg={items.projectImg.src}
                                         title={items.title}
                                         techName={items.techName}
                                         time={items.time}
                                         cardId={items.cardId}
-                                        onChange={(e) => HandleChange(e, 'projectItems', items.cardId)}
+                                        selectedItem={items.selected}
+                                        {...register("projects")}
+                                        onChange={(e) => HandleChange(e, 'projects', items)}
                                         onBlur={onBlur}
                                         value={value}
                                     />
