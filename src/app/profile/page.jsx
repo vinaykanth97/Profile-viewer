@@ -18,6 +18,7 @@ export default function Profile() {
   const onSubmit = (data) => {
     localStorage.setItem('localFormDatas', JSON?.stringify({ ...formData, profileData: data }))
     setFormData({
+      ...formData,
       profileData: data,
     })
   };

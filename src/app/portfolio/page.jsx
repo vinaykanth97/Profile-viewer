@@ -10,88 +10,80 @@ export default function Portfolio() {
 
     let useFormContext = useContext(formContext)
     let { formData, setFormData } = useFormContext
-    const { register, handleSubmit, formState: { errors }, control, setValue, getValues, reset } = useForm({
+    const { register, handleSubmit, control, setValue } = useForm({
         mode: 'all',
-        // defaultValues: formData?.portfolioData
     });
-    let [portfolio, setPortfolio] = useState({
-        playground,
-        projects
-    })
 
     const HandleChange = (e, checkBoxName, selectedItem) => {
+        let { playground, projects } = formData?.portfolioData
 
         if (e.target.checked) {
-            let selectedPortfolio = portfolio?.playground?.map(t => {
+            let playgroundData = playground?.map(t => {
                 if (t.cardId === selectedItem.cardId) {
                     t.selected = true
                 }
                 return t
             })
-            let selectProject = portfolio?.projects?.map(t => {
+
+            let projectData = projects?.map(t => {
                 if (t.cardId === selectedItem.cardId) {
                     t.selected = true
                 }
                 return t
             })
-            setPortfolio({
-                playground: selectedPortfolio,
-                projects: selectProject
+
+            setFormData({
+                ...formData,
+                portfolioData: {
+                    playground: playgroundData,
+                    projects: projectData
+                }
             })
-            // selectedItem.selected = true
-            // setPortfolio(portfolio)
-            // if (checkBoxName === "playGroundItems") {
-            //     // console.log(portfolio)
-            //     setPortfolio({
-            //         playground: [...portfolio?.playground, selectedItem],
-            //         projects: [...portfolio?.projects]
-            //     })
-            // } else {
-            //     setPortfolio({
-            //         playground: [...portfolio?.playground],
-            //         projects: [...portfolio?.projects, selectedItem]
-            //     })
-            // }
+
         } else {
-            let selectedPortfolio = portfolio?.playground?.map(t => {
+            let playgroundData = playground?.map(t => {
                 if (t.cardId === selectedItem.cardId) {
                     t.selected = false
                 }
                 return t
             })
-            let selectProject = portfolio?.projects?.map(t => {
+            let projectData = projects?.map(t => {
                 if (t.cardId === selectedItem.cardId) {
                     t.selected = false
                 }
                 return t
-            })
-            setPortfolio({
-                playground: selectedPortfolio,
-                projects: selectProject
             })
 
+            setFormData({
+                ...formData,
+                portfolioData: {
+                    playground: playgroundData,
+                    projects: projectData
+                }
+            })
         }
-
+        setValue('playground', playground)
+        setValue('projects', projects)
     }
     useEffect(() => {
-        if (JSON.parse(localStorage.getItem('localFormDatas'))?.portfolioData) {
-            setFormData(formData)
-        } else {
-            setFormData({
-                portfolioData: {
-                    playground,
-                    projects
-                }
-            })
-        }
-        setValue('playground', portfolio?.playground)
-        setValue('projects', portfolio?.projects)
-    }, [portfolio])
+        setFormData({
+            ...formData,
+            portfolioData: {
+                playground,
+                projects
+            }
+        })
+    }, [])
+    useEffect(() => {
+        // console.log(formData)
+    }, [formData])
 
     const onSubmit = (data) => {
-        console.log(data)
+
+        console.log(formData)
         localStorage.setItem('localFormDatas', JSON?.stringify({ ...formData, portfolioData: data }))
         setFormData({
+            ...formData,
             portfolioData: data,
         })
     };
@@ -105,7 +97,6 @@ export default function Portfolio() {
                 </div>
                 <div className='flex flex-wrap gap-[20px] justify-between'>
                     {formData?.portfolioData?.playground?.map((items, i) => {
-                        console.log(items)
                         return (
                             <Controller
                                 defaultValue={false}

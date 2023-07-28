@@ -15,6 +15,7 @@ export default function Socials() {
 
         localStorage.setItem('localFormDatas', JSON?.stringify({ ...formData, socialData: data }))
         setFormData({
+            ...formData,
             socialData: data,
         })
     };
